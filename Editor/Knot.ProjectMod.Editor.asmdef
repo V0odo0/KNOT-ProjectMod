@@ -1,0 +1,24 @@
+{
+    "name": "Knot.ProjectMod.Editor",
+    "rootNamespace": "Knot.ProjectMod.Editor",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "!DISABLE_KNOT_PROJECTMOD"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.editorcoroutines",
+            "expression": "",
+            "define": ""
+        }
+    ],
+    "noEngineReferences": false
+}

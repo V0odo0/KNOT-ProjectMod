@@ -1,19 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor.PackageManager;
-using UnityEditor;
+using Knot.ProjectMod.Editor.Attributes;
 using UnityEngine;
 
 namespace Knot.ProjectMod.Editor
 {
     [CreateAssetMenu(menuName = "KNOT/ProjectMod/Preset", fileName = "ProjectModPreset")]
-    public class ProjectModPresetAsset : ScriptableObject
+    public class KnotProjectModPreset : ScriptableObject
     {
-        public List<IProjectMod> Mods => _mods;
-        [SerializeReference, KnotTypePicker(typeof(IProjectMod))] private List<IProjectMod> _mods;
+        public List<IKnotProjectMod> Mods => _mods ?? (_mods = new List<IKnotProjectMod>());
+        [SerializeReference, KnotTypePicker(typeof(IKnotProjectMod))] 
+        private List<IKnotProjectMod> _mods;
 
         /*
         [ContextMenu(nameof(Apply))]

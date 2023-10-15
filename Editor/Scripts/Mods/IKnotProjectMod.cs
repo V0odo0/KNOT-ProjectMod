@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Knot.ProjectMod.Editor
 {
-    public interface IProjectMod
+    public interface IKnotProjectMod
     {
         
     }

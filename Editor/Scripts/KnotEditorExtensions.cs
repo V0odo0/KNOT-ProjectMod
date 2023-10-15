@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEngine;
 using System.Text.RegularExpressions;
+using Knot.ProjectMod.Editor.Attributes;
 
 namespace Knot.ProjectMod.Editor
 {

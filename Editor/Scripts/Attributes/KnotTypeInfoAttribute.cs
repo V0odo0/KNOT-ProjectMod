@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Knot.ProjectMod.Editor
+namespace Knot.ProjectMod.Editor.Attributes
 {
     /// <summary>
     /// Special attribute used to expand type info  

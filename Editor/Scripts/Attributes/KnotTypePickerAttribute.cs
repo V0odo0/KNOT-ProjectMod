@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Knot.ProjectMod.Editor
+namespace Knot.ProjectMod.Editor.Attributes
 {
     /// <summary>
     /// Special attribute for <see cref="Type"/> dependent types and fields

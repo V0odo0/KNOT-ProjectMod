@@ -6,12 +6,32 @@ using UnityEngine;
 
 namespace Knot.ProjectMod.Editor
 {
-    [CreateAssetMenu(menuName = "KNOT/ProjectMod/Preset", fileName = "ProjectModPreset")]
-    public class KnotProjectModPreset : ScriptableObject
+    [CreateAssetMenu(menuName = KnotProjectMod.CorePath + "Preset", fileName = "ProjectModPreset")]
+    public class KnotProjectModPreset : ScriptableObject, IEnumerable<IKnotProjectMod>
     {
         public List<IKnotProjectMod> Mods => _mods ?? (_mods = new List<IKnotProjectMod>());
-        [SerializeReference, KnotTypePicker(typeof(IKnotProjectMod))] 
+        [SerializeReference, KnotTypePicker(typeof(IKnotProjectMod))]
         private List<IKnotProjectMod> _mods;
+
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+
+        public IEnumerator<IKnotProjectMod> GetEnumerator() => Mods.GetEnumerator();
+
+        public ICollection<IKnotProjectMod> GetAllModsChain()
+        {
+            List<IKnotProjectMod> mods = new List<IKnotProjectMod>();
+
+            foreach (var m in Mods)
+            {
+                if (m is KnotPresetMod presetMod && presetMod.Preset != null)
+                    mods.AddRange(presetMod.Preset.GetAllModsChain());
+                else mods.Add(m);
+            }
+
+            return mods;
+        }
 
         /*
         [ContextMenu(nameof(Apply))]

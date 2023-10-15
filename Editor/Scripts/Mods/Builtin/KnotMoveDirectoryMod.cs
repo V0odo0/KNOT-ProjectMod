@@ -1,14 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
 
 namespace Knot.ProjectMod.Editor
 {
     [Serializable]
-    public class KnotRenameProjectMod : IKnotProjectMod
+    public class KnotMoveDirectoryMod : IKnotProjectMod
     {
         public string OldName;
         public string NewName;
@@ -17,6 +19,7 @@ namespace Knot.ProjectMod.Editor
         {
 
         }
+        
         /*public override Task<bool> Process()
         {
             try

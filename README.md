@@ -3,7 +3,7 @@
 ![Platforms](https://img.shields.io/badge/platforms-all-blue)
 ![GitHub](https://img.shields.io/github/license/V0odo0/KNOT-Localization?label=license)
 
-[Changelog](https://github.com/V0odo0/KNOT-Localization/blob/main/CHANGELOG.md)**
+**[Changelog](https://github.com/V0odo0/KNOT-ProjectMod/blob/main/CHANGELOG.md)**
 
 ## Installation
 

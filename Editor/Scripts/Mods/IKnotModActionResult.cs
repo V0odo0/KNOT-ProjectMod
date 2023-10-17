@@ -4,8 +4,9 @@ using UnityEngine;
 
 namespace Knot.ProjectMod.Editor
 {
-    public interface IKnotProjectMod
+    public interface IKnotModActionResult
     {
-        
+        bool IsCompleted { get; }
+        string ResultMessage { get; }
     }
 }

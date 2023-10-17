@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -18,19 +19,7 @@ namespace Knot.ProjectMod.Editor
         [InitializeOnLoadMethod]
         static void Init()
         {
-            Debug.Log("Init on load");
-            AssemblyReloadEvents.beforeAssemblyReload += AssemblyReloadEventsOnbeforeAssemblyReload;
-            AssemblyReloadEvents.afterAssemblyReload += AssemblyReloadEventsOnafterAssemblyReload;
-        }
-
-        private static void AssemblyReloadEventsOnafterAssemblyReload()
-        {
-            Debug.Log(nameof(AssemblyReloadEventsOnafterAssemblyReload));
-        }
-
-        private static void AssemblyReloadEventsOnbeforeAssemblyReload()
-        {
-            Debug.Log(nameof(AssemblyReloadEventsOnbeforeAssemblyReload));
+            TryContinue();
         }
 
         internal static void Log(object message, LogType type, Object context = null)
@@ -52,7 +41,77 @@ namespace Knot.ProjectMod.Editor
         }
 
 
-        public static void ProcessPreset(KnotProjectModPreset preset)
+        internal static void SaveState(ModActionState state)
+        {
+            if (state == null)
+                return;
+
+            EditorPrefs.SetString(nameof(ModActionState), JsonUtility.ToJson(state));
+        }
+
+        internal static IEnumerator StartEnumerator(ModActionState state)
+        {
+            if (state == null || string.IsNullOrEmpty(state.PresetAssetGuid))
+                yield break;
+
+            var preset =
+                AssetDatabase.LoadAssetAtPath<KnotProjectModPreset>(
+                    AssetDatabase.GUIDToAssetPath(state.PresetAssetGuid));
+
+            if (preset == null)
+                yield break;
+
+            SaveState(state);
+
+            var mods = preset.BuildAllModsChain();
+            var startModId = Mathf.Clamp(state.NextModId, 0, mods.Length);
+            for (int i = startModId; i < mods.Length; i++)
+            {
+                if (!mods[i].Enabled || !(mods[i] is IKnotModAction modAction))
+                {
+                    state.NextModId++;
+                    SaveState(state);
+                    continue;
+                }
+
+                var progressId = Progress.Start($"{state.NextModId}", "ASd", Progress.Options.Indefinite | Progress.Options.Sticky);
+                Progress.SetTimeDisplayMode(progressId, Progress.TimeDisplayMode.NoTimeShown);
+
+                IKnotModActionResult result = null;
+                yield return modAction.Perform((sender, r) =>
+                {
+                    state.NextModId++;
+                    SaveState(state);
+                    result = r; 
+
+                    Progress.Finish(progressId, r.IsCompleted ? Progress.Status.Succeeded : Progress.Status.Failed);
+                });
+
+                yield return null;
+                yield return null;
+                
+                if ((bool) !result?.IsCompleted)
+                    break;
+            }
+            
+            EditorPrefs.DeleteKey(nameof(ModActionState));
+            Progress.ShowDetails();
+        }
+
+        public static bool TryContinue()
+        {
+            if (!EditorPrefs.HasKey(nameof(ModActionState)))
+                return false;
+
+            var state = JsonUtility.FromJson<ModActionState>(EditorPrefs.GetString(nameof(ModActionState)));
+            if (state == null)
+                return false;
+
+            Start(state);
+            return true;
+        }
+
+        public static void Start(KnotProjectModPreset preset)
         {
             if (preset == null || !EditorUtility.IsPersistent(preset))
             {
@@ -63,31 +122,36 @@ namespace Knot.ProjectMod.Editor
             if (!preset.Any())
                 return;
 
-            var state = new ProcessModState(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(preset)));
-
+            var state = new ModActionState(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(preset)));
+            Start(state);
         }
 
-
-        [DidReloadScripts]
-        public static void Did()
+        public static void Start(ModActionState actionState)
         {
-            Debug.Log("DID");
+            EditorCoroutineUtility.StartCoroutineOwnerless(StartEnumerator(actionState));
         }
 
 
         [Serializable]
-        public class ProcessModState
+        public class ModActionState
         {
             public string PresetAssetGuid;
-            public DateTime Timestamp;
-            public int ModId;
+            public int NextModId;
 
 
-            public ProcessModState() { }
+            public ModActionState() { }
 
-            public ProcessModState(string presetAssetGuid)
+            public ModActionState(string presetAssetGuid)
             {
                 PresetAssetGuid = presetAssetGuid;
+            }
+
+
+            public override string ToString()
+            {
+                return
+                    $"{nameof(PresetAssetGuid)}: {PresetAssetGuid}\n" +
+                    $"{nameof(NextModId)}: {NextModId}";
             }
         }
     }

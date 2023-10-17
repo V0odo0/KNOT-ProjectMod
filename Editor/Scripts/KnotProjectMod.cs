@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
-using UnityEditor.Callbacks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -67,30 +65,32 @@ namespace Knot.ProjectMod.Editor
             var startModId = Mathf.Clamp(state.NextModId, 0, mods.Length);
             for (int i = startModId; i < mods.Length; i++)
             {
-                if (!mods[i].Enabled || !(mods[i] is IKnotModAction modAction))
+                if (!(mods[i] is IKnotModAction modAction))
                 {
                     state.NextModId++;
                     SaveState(state);
                     continue;
                 }
 
-                var progressId = Progress.Start($"{state.NextModId}", "ASd", Progress.Options.Indefinite | Progress.Options.Sticky);
-                Progress.SetTimeDisplayMode(progressId, Progress.TimeDisplayMode.NoTimeShown);
+                var actionTitle = $"{CoreName} action [{state.NextModId + 1}]";
+                var actionDescription = modAction.BuildDescription();
+                var actionProgressId = Progress.Start(actionTitle, actionDescription, Progress.Options.Indefinite | Progress.Options.Sticky);
+                Progress.SetTimeDisplayMode(actionProgressId, Progress.TimeDisplayMode.NoTimeShown);
 
-                IKnotModActionResult result = null;
+                IKnotModActionResult actionResult = null;
                 yield return modAction.Perform((sender, r) =>
                 {
                     state.NextModId++;
                     SaveState(state);
-                    result = r; 
-
-                    Progress.Finish(progressId, r.IsCompleted ? Progress.Status.Succeeded : Progress.Status.Failed);
+                    actionResult = r; 
+                    
+                    Progress.Finish(actionProgressId, r.IsCompleted ? Progress.Status.Succeeded : Progress.Status.Failed);
                 });
 
                 yield return null;
                 yield return null;
                 
-                if ((bool) !result?.IsCompleted)
+                if ((bool) !actionResult?.IsCompleted)
                     break;
             }
             

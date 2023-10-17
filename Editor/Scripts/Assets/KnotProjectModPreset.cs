@@ -20,12 +20,18 @@ namespace Knot.ProjectMod.Editor
 
         public IKnotMod[] BuildAllModsChain()
         {
-            List<IKnotMod> mods = new List<IKnotMod>();
+            var mods = new List<IKnotMod>();
+            var presetReferences = new HashSet<KnotProjectModPreset> { this };
 
             foreach (var m in Mods)
             {
-                if (m is KnotPresetReferenceMod presetMod && presetMod.Preset != null)
+                if (m is KnotPresetReferenceMod presetMod && 
+                    presetMod.Preset != null &&
+                    !presetReferences.Contains(presetMod.Preset))
+                {
                     mods.AddRange(presetMod.Preset.BuildAllModsChain());
+                    presetReferences.Add(presetMod.Preset);
+                }
                 else mods.Add(m);
             }
 

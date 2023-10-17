@@ -13,6 +13,8 @@ namespace Knot.ProjectMod.Editor
         public BuildTargetGroup BuildTarget;
         public List<string> Defines;
 
+        public override string BuildDescription() => $"Set Scripting Define Symbols \"{string.Join(", ", Defines)}\"";
+        
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)
         {
             bool hasDiff = false;

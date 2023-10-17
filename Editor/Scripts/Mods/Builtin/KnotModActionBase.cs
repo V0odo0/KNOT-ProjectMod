@@ -7,13 +7,7 @@ namespace Knot.ProjectMod.Editor
     [Serializable]
     public abstract class KnotModActionBase : IKnotModAction
     {
-        public virtual bool Enabled
-        {
-            get => _enabled;
-            set => _enabled = value;
-        }
-        [SerializeField] protected bool _enabled = true;
-
+        [SerializeField, HideInInspector] private byte _preventArrayElementStringNaming;
 
         public virtual string BuildDescription() => GetType().Name;
 

@@ -14,6 +14,8 @@ namespace Knot.ProjectMod.Editor
         public string Destination;
 
 
+        public override string BuildDescription() => $"Move File from \"{Source}\" to \"{Destination}\"";
+        
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)
         {
             if (string.IsNullOrEmpty(Source) || string.IsNullOrEmpty(Destination) || !File.Exists(Source))

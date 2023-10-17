@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Knot.ProjectMod.Editor.Attributes;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.Networking.Types;
 using UnityEngine.Scripting.APIUpdating;
 
 namespace Knot.ProjectMod.Editor
@@ -15,6 +16,8 @@ namespace Knot.ProjectMod.Editor
         public string Package;
 
 
+        public override string BuildDescription() => $"Remove Package \"{Package}\"";
+        
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)
         {
             if (string.IsNullOrEmpty(Package))

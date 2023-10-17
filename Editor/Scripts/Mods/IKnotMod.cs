@@ -6,6 +6,6 @@ namespace Knot.ProjectMod.Editor
 {
     public interface IKnotMod
     {
-        bool Enabled { get; }
+
     }
 }

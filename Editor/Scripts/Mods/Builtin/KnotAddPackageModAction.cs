@@ -12,6 +12,8 @@ namespace Knot.ProjectMod.Editor
         public string Package;
 
 
+        public override string BuildDescription() => $"Add Package \"{Package}\"";
+
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)
         {
             if (string.IsNullOrEmpty(Package))

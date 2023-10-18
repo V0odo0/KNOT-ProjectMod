@@ -37,11 +37,5 @@ namespace Knot.ProjectMod.Editor
 
             return mods.ToArray();
         }
-
-        [ContextMenu(nameof(PerformActions))]
-        public void PerformActions()
-        {
-            KnotProjectMod.Start(this);
-        }
     }
 }

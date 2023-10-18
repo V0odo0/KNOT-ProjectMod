@@ -111,19 +111,25 @@ namespace Knot.ProjectMod.Editor
             return true;
         }
 
-        public static void Start(KnotProjectModPreset preset)
+        public static bool TryStart(KnotProjectModPreset preset)
         {
             if (preset == null || !EditorUtility.IsPersistent(preset))
             {
                 Log($"{preset?.name} could not be processed", LogType.Warning, preset);
-                return;
+                return false;
             }
 
             if (!preset.Any())
-                return;
+                return false;
 
             var state = new ModActionState(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(preset)));
+
+            if (!EditorUtility.DisplayDialog(CoreName,
+                    $"Some {CoreName} actions may lead to unpredictable results. Continue anyways?", "Yes", "No"))
+                return false;
+
             Start(state);
+            return true;
         }
 
         public static void Start(ModActionState actionState)

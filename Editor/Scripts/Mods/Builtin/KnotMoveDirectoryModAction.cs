@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Knot.ProjectMod.Editor
 {
     [Serializable]
-    [KnotTypeInfo(displayName: "Move Directory")]
+    [KnotTypeInfo(displayName: "Move Directory", MenuCustomName = BuiltinModActionPath + "Move Directory")]
     public class KnotMoveDirectoryModAction : KnotModActionBase
     {
         public string Source

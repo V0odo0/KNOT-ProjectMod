@@ -3,15 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using Knot.ProjectMod.Editor.Attributes;
 using UnityEditor;
+using UnityEngine;
 
 namespace Knot.ProjectMod.Editor
 {
     [Serializable]
-    [KnotTypeInfo(displayName: "Set Scripting Define Symbols")]
+    [KnotTypeInfo(displayName: "Set Scripting Define Symbols", MenuCustomName = BuiltinModActionPath + "Set Scripting Define Symbols")]
     public class KnotSetScriptingDefineSymbolsModAction : KnotModActionBase
     {
-        public BuildTargetGroup BuildTarget;
-        public List<string> Defines;
+        public BuildTargetGroup Target
+        {
+            get => _target;
+            set => _target = value;
+        }
+        [SerializeField] private BuildTargetGroup _target = BuildTargetGroup.Standalone;
+        
+        public List<string> Defines
+        {
+            get => _defines;
+            set => _defines = value;
+        }
+        [SerializeField] private List<string> _defines = new List<string>();
+
 
         public override string BuildDescription() => $"Set Scripting Define Symbols \"{string.Join(", ", Defines)}\"";
         
@@ -19,7 +32,7 @@ namespace Knot.ProjectMod.Editor
         {
             bool hasDiff = false;
 
-            PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTarget, out var current);
+            PlayerSettings.GetScriptingDefineSymbolsForGroup(Target, out var current);
             if (current != null)
             {
                 if (current.Length == Defines.Count)
@@ -37,7 +50,7 @@ namespace Knot.ProjectMod.Editor
             }
 
             if (hasDiff)
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTarget, Defines.ToArray());
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(Target, Defines.ToArray());
 
             onActionPerformed?.Invoke(this, KnotModActionResult.Completed());
             yield break;

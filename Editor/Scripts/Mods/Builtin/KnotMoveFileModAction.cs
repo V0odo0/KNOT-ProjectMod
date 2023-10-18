@@ -3,15 +3,27 @@ using System.Collections;
 using System.IO;
 using Knot.ProjectMod.Editor.Attributes;
 using UnityEditor;
+using UnityEngine;
 
 namespace Knot.ProjectMod.Editor
 {
     [Serializable]
-    [KnotTypeInfo(displayName: "Move File")]
+    [KnotTypeInfo(displayName: "Move File", MenuCustomName = BuiltinModActionPath + "Move File")]
     public class KnotMoveFileModAction : KnotModActionBase
     {
-        public string Source;
-        public string Destination;
+        public string Source
+        {
+            get => _source;
+            set => _source = value;
+        }
+        [SerializeField] private string _source = "Assets/";
+
+        public string Destination
+        {
+            get => _destination;
+            set => _destination = value;
+        }
+        [SerializeField] private string _destination = "Assets/";
 
 
         public override string BuildDescription() => $"Move File from \"{Source}\" to \"{Destination}\"";

@@ -1,19 +1,21 @@
 using System;
 using System.Collections;
-using System.Threading.Tasks;
 using Knot.ProjectMod.Editor.Attributes;
 using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.Networking.Types;
-using UnityEngine.Scripting.APIUpdating;
 
 namespace Knot.ProjectMod.Editor
 {
     [Serializable]
-    [KnotTypeInfo(displayName:"Remove Package")]
+    [KnotTypeInfo(displayName:"Remove Package", MenuCustomName = BuiltinModActionPath + "Remove Package", Order = -100)]
     public class KnotRemovePackageModAction : KnotModActionBase
     {
-        public string Package;
+        public string Package
+        {
+            get => _package;
+            set => _package = value;
+        }
+        [SerializeField] private string _package = "com.package.name";
 
 
         public override string BuildDescription() => $"Remove Package \"{Package}\"";

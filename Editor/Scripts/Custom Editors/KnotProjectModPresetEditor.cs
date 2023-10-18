@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,6 @@ namespace Knot.ProjectMod.Editor
         private KnotProjectModPreset _target;
 
         private string _modActionDescription;
-        [SerializeField] private bool _showDescriptionFoldout = true;
 
 
         void OnEnable()
@@ -31,6 +30,7 @@ namespace Knot.ProjectMod.Editor
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
         }
 
+        
         void OnUndoRedoPerformed()
         {
             RebuildModActionDescriptions();
@@ -38,7 +38,7 @@ namespace Knot.ProjectMod.Editor
 
         void RebuildModActionDescriptions()
         {
-            _modActionDescription = string.Join("\n\n",
+            _modActionDescription = string.Join("\n↓\n",
                 _target.BuildAllModsChain().Where(m => m != null).OfType<IKnotModAction>()
                     .Select((action, i) => $"[{i + 1}] {action.BuildDescription()}"));
         }
@@ -58,15 +58,22 @@ namespace Knot.ProjectMod.Editor
             if (EditorGUI.EndChangeCheck())
                 RebuildModActionDescriptions();
 
-            if (string.IsNullOrEmpty(_modActionDescription))
-                return;
+            var canPerformActions = !string.IsNullOrEmpty(_modActionDescription);
+
+            GUI.enabled = canPerformActions;
 
             EditorGUILayout.Space(10);
-            _showDescriptionFoldout = EditorGUILayout.Foldout(_showDescriptionFoldout, "Actions");
-            if (_showDescriptionFoldout)
+            
+            if (GUILayout.Button("Start", EditorStyles.miniButtonMid))
+                KnotProjectMod.TryStart(_target);
+
+            if (canPerformActions)
             {
                 EditorGUILayout.HelpBox(_modActionDescription, MessageType.None, true);
             }
+
+            GUI.enabled = true;
+
         }
     }
 }

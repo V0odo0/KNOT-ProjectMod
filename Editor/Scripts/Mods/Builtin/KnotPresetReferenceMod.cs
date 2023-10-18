@@ -8,13 +8,6 @@ namespace Knot.ProjectMod.Editor
     [KnotTypeInfo(displayName: "Preset Reference")]
     public class KnotPresetReferenceMod : IKnotMod
     {
-        public bool Enabled
-        {
-            get => _enabled;
-            set => _enabled = value;
-        }
-        [SerializeField] private bool _enabled = true;
-
         public KnotProjectModPreset Preset
         {
             get => _preset;

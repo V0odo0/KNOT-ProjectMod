@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Knot.ProjectMod.Editor.Attributes;
 using UnityEngine;
 
@@ -25,12 +26,16 @@ namespace Knot.ProjectMod.Editor
 
             foreach (var m in Mods)
             {
-                if (m is KnotPresetReferenceMod presetMod && 
-                    presetMod.Preset != null &&
-                    !presetReferences.Contains(presetMod.Preset))
+                if (m is KnotPresetReferencesMod presetMod && presetMod.Presets != null)
                 {
-                    mods.AddRange(presetMod.Preset.BuildAllModsChain());
-                    presetReferences.Add(presetMod.Preset);
+                    foreach (var preset in presetMod.Presets)
+                    {
+                        if (preset != null && !presetReferences.Contains(preset))
+                        {
+                            mods.AddRange(preset.BuildAllModsChain());
+                            presetReferences.Add(preset);
+                        }
+                    }
                 }
                 else mods.Add(m);
             }

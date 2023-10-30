@@ -27,7 +27,7 @@ namespace Knot.ProjectMod.Editor
                 onActionPerformed?.Invoke(this, KnotModActionResult.Failed());
                 yield break;
             }
-
+            
             var request = Client.Remove(Package);
             while (!request.IsCompleted)
                 yield return null;

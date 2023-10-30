@@ -89,9 +89,6 @@ namespace Knot.ProjectMod.Editor
 
                 yield return null;
                 yield return null;
-                
-                if ((bool) !actionResult?.IsCompleted)
-                    break;
             }
             
             EditorPrefs.DeleteKey(nameof(ModActionState));

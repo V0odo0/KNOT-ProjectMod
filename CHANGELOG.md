@@ -1,3 +1,6 @@
+## 0.2.4 (2023-10-30)
+* Add KnotSetScriptingDefineSymbolsModAction
+
 ## 0.2.3 (2023-10-18)
 * Builtin Mod Actions
 

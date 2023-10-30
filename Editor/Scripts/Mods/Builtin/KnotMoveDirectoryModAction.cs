@@ -30,20 +30,26 @@ namespace Knot.ProjectMod.Editor
 
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)
         {
-            if (string.IsNullOrEmpty(Source) || string.IsNullOrEmpty(Destination) || !Directory.Exists(Source))
+            if (string.IsNullOrEmpty(Source) || string.IsNullOrEmpty(Destination))
             {
                 onActionPerformed?.Invoke(this, KnotModActionResult.Failed());
                 yield break;
             }
 
+            if (!Directory.Exists(Source))
+            {
+                onActionPerformed?.Invoke(this, KnotModActionResult.Completed());
+                yield break;
+            }
+            
             if (Directory.Exists(Destination) && Directory.GetFiles(Destination).Length == 0 && Directory.GetDirectories(Destination).Length == 0)
                 Directory.Delete(Destination);
             else if (Directory.Exists(Destination))
             {
-                onActionPerformed?.Invoke(this, KnotModActionResult.Failed());
+                onActionPerformed?.Invoke(this, KnotModActionResult.Completed());
                 yield break;
             }
-
+            
             Directory.Move(Source, Destination);
             AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 

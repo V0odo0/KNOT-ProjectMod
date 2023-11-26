@@ -1,5 +1,7 @@
-## 0.2.5 (2023-11-26)
+
+## 0.2.6 (2023-11-26)
 * Add AllowUnsafeCodeModAction
+* Add ActionMethod to SetScriptingDefineSymbolsModAction
 
 ## 0.2.4 (2023-10-30)
 * Add KnotSetScriptingDefineSymbolsModAction

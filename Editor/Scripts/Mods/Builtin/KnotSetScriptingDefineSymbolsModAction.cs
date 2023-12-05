@@ -63,9 +63,10 @@ namespace Knot.ProjectMod.Editor
                         else hasDiff = true;
                         break;
                     case ActionMethod.Append:
+                        newDefines.AddRange(curDefines);
                         foreach (var d in Defines)
                         {
-                            if (!curDefines.Contains(d))
+                            if (!newDefines.Contains(d))
                             {
                                 newDefines.Add(d);
                                 hasDiff = true;

@@ -1,3 +1,5 @@
+## 0.2.7 (2023-12-05)
+* KnotSetScriptingDefineSymbolsModAction Append mode fix
 
 ## 0.2.6 (2023-11-26)
 * Add AllowUnsafeCodeModAction

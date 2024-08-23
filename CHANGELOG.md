@@ -1,3 +1,7 @@
+## 0.2.8 (2024-08-23)
+
+* Fixed KnotTypePicker'r attribute drawer not responding to property changes
+
 ## 0.2.7 (2023-12-05)
 * KnotSetScriptingDefineSymbolsModAction Append mode fix
 

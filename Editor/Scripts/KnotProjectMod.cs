@@ -76,7 +76,7 @@ namespace Knot.ProjectMod.Editor
                 var actionDescription = modAction.BuildDescription();
                 var actionProgressId = Progress.Start(actionTitle, actionDescription, Progress.Options.Indefinite | Progress.Options.Sticky);
                 Progress.SetTimeDisplayMode(actionProgressId, Progress.TimeDisplayMode.NoTimeShown);
-
+                
                 IKnotModActionResult actionResult = null;
                 yield return modAction.Perform((sender, r) =>
                 {

@@ -1,3 +1,8 @@
+## 0.3.0 (2024-08-24)
+
+* Add KnotAddBuildSceneModAction
+* Add KnotRemoveBuildSceneModAction
+
 ## 0.2.8 (2024-08-23)
 
 * Fixed KnotTypePicker'r attribute drawer not responding to property changes

@@ -36,6 +36,12 @@ namespace Knot.ProjectMod.Editor
                 yield break;
             }
 
+            if (File.Exists(Destination))
+            {
+                onActionPerformed?.Invoke(this, new KnotModActionResult(true, $"{Destination} already exist"));
+                yield break;
+            }
+
             File.Move(Source, Destination);
             AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 

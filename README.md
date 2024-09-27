@@ -1,4 +1,3 @@
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/V0odo0/KNOT-ProjectMod?label=release)
 ![Unity version](https://img.shields.io/badge/Unity-2021.3%2B-blue)
 ![Platforms](https://img.shields.io/badge/platforms-all-blue)
 

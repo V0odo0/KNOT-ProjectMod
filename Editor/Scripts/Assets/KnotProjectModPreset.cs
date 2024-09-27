@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Knot.ProjectMod.Editor.Attributes;
+using Knot.Core;
 using UnityEngine;
 
 namespace Knot.ProjectMod.Editor
@@ -10,7 +9,7 @@ namespace Knot.ProjectMod.Editor
     public class KnotProjectModPreset : ScriptableObject, IEnumerable<IKnotMod>
     {
         public List<IKnotMod> Mods => _mods ?? (_mods = new List<IKnotMod>());
-        [SerializeReference, KnotTypePicker(typeof(IKnotMod))]
+        [SerializeReference]
         private List<IKnotMod> _mods;
 
 

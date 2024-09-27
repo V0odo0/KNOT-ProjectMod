@@ -1,15 +1,16 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Knot.ProjectMod.Editor.Attributes;
+using Knot.Core;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
 namespace Knot.ProjectMod.Editor
 {
     [Serializable]
     [KnotTypeInfo(displayName: "Allow Unsafe Code", MenuCustomName = BuiltinModActionPath + "Allow Unsafe Code")]
-    public class AllowUnsafeCodeModAction : KnotModActionBase
+    [MovedFrom(true, "Knot.ProjectMod.Editor", null, "AllowUnsafeCodeModAction")]
+    public class KnotAllowUnsafeCodeModAction : KnotModActionBase
     {
         public bool AllowUnsafeCode
         {

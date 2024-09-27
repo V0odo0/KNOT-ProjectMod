@@ -121,10 +121,6 @@ namespace Knot.ProjectMod.Editor
 
             var state = new ModActionState(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(preset)));
 
-            if (!EditorUtility.DisplayDialog(CoreName,
-                    $"Some {CoreName} actions may lead to unpredictable results. Continue anyways?", "Yes", "No"))
-                return false;
-
             Start(state);
             return true;
         }

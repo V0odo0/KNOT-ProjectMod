@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Knot.ProjectMod.Editor.Attributes;
+using Knot.Core;
+using Knot.Core.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;

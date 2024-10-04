@@ -25,7 +25,7 @@ namespace Knot.ProjectMod.Editor
         [SerializeField] private ScriptingImplementation _implementation = ScriptingImplementation.IL2CPP;
 
 
-        public override string BuildDescription() => $"Set Scripting Backend for {Target} to {Implementation}";
+        public override string GetDescription() => $"Set Scripting Backend for {Target} to {Implementation}";
         
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)
         {

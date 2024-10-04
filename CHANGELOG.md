@@ -1,3 +1,13 @@
+## 0.4.1 (2024-10-04)
+
+* Add IKnotModDescriptor
+* Fixed Mods List properties not respoding to changes
+
+## 0.4.0 (2024-09-28)
+
+* [breaking change] UPM (GitHub) - Moving common parts of code to Knot.Core assembly. Please, use scope registry installation method
+* Migrating to Unity 2021.3+
+
 ## 0.3.0 (2024-08-24)
 
 * Add KnotAddBuildSceneModAction

@@ -26,7 +26,7 @@ namespace Knot.ProjectMod.Editor
         [SerializeField] private BuildTarget _target = BuildTarget.StandaloneWindows64;
 
 
-        public override string BuildDescription() => $"Switch Active Build Target to {TargetGroup} / {Target}";
+        public override string GetDescription() => $"Switch Active Build Target to {TargetGroup} / {Target}";
         
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)
         {

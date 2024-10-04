@@ -33,7 +33,7 @@ namespace Knot.ProjectMod.Editor
         [SerializeField] private List<string> _defines = new List<string>();
 
 
-        public override string BuildDescription() => $"{Action} Scripting Define Symbols \"{string.Join(", ", Defines)}\"";
+        public override string GetDescription() => $"{Action} Scripting Define Symbols \"{string.Join(", ", Defines)}\"";
         
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)
         {

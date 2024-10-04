@@ -26,7 +26,7 @@ namespace Knot.ProjectMod.Editor
         [SerializeField] private int _insertAtIndex;
 
 
-        public override string BuildDescription()
+        public override string GetDescription()
         {
             if (Scene == null)
                 return "Missing Scene reference";

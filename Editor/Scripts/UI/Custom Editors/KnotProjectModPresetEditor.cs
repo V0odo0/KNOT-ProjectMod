@@ -41,7 +41,7 @@ namespace Knot.ProjectMod.Editor
                 if (EditorUtility.DisplayDialog(KnotProjectMod.CoreName,
                         $"Some actions may lead to unpredictable results. Continue anyways?", "Yes", "No"))
                 {
-                    KnotProjectMod.TryStart(_target);
+                    KnotProjectMod.Start(_target);
                 }
             }
             GUI.enabled = true;

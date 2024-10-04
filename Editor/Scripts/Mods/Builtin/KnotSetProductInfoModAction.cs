@@ -14,7 +14,7 @@ namespace Knot.ProjectMod.Editor
         [field: SerializeField] public string ProductName { get; set; } = "My Product Name";
 
 
-        public override string BuildDescription() => $"Set Company Name \"{CompanyName}\" & Product Name \"{ProductName}\"";
+        public override string GetDescription() => $"Set Company Name \"{CompanyName}\" & Product Name \"{ProductName}\"";
 
 
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)

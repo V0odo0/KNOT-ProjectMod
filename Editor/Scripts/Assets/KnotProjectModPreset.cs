@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Knot.Core;
 using UnityEngine;
 
 namespace Knot.ProjectMod.Editor
@@ -9,8 +8,7 @@ namespace Knot.ProjectMod.Editor
     public class KnotProjectModPreset : ScriptableObject, IEnumerable<IKnotMod>
     {
         public List<IKnotMod> Mods => _mods ?? (_mods = new List<IKnotMod>());
-        [SerializeReference]
-        private List<IKnotMod> _mods;
+        [SerializeReference] private List<IKnotMod> _mods = new();
 
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

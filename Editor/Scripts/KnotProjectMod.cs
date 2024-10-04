@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Knot.Core.Editor;
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -52,10 +53,7 @@ namespace Knot.ProjectMod.Editor
             if (state == null || string.IsNullOrEmpty(state.PresetAssetGuid))
                 yield break;
 
-            var preset =
-                AssetDatabase.LoadAssetAtPath<KnotProjectModPreset>(
-                    AssetDatabase.GUIDToAssetPath(state.PresetAssetGuid));
-
+            var preset = state.GetPreset();
             if (preset == null)
                 yield break;
 
@@ -72,8 +70,8 @@ namespace Knot.ProjectMod.Editor
                     continue;
                 }
 
-                var actionTitle = $"{CoreName} action [{state.NextModId + 1}]";
-                var actionDescription = modAction.BuildDescription();
+                var actionTitle = $"{modAction.GetType().GetManagedReferenceTypeName()}";
+                var actionDescription = modAction is IKnotModDescriptor descriptor ? descriptor.GetDescription() : "No description";
                 var actionProgressId = Progress.Start(actionTitle, actionDescription, Progress.Options.Indefinite | Progress.Options.Sticky);
                 Progress.SetTimeDisplayMode(actionProgressId, Progress.TimeDisplayMode.NoTimeShown);
                 
@@ -84,6 +82,8 @@ namespace Knot.ProjectMod.Editor
                     SaveState(state);
                     actionResult = r; 
                     
+                    if (!r.IsCompleted && !string.IsNullOrEmpty(r.ResultMessage))
+                        Progress.SetDescription(actionProgressId, r.ResultMessage);
                     Progress.Finish(actionProgressId, r.IsCompleted ? Progress.Status.Succeeded : Progress.Status.Failed);
                 });
 
@@ -95,7 +95,12 @@ namespace Knot.ProjectMod.Editor
             Progress.ShowDetails();
         }
 
-        public static bool TryContinue()
+        internal static void Start(ModActionState actionState)
+        {
+            EditorCoroutineUtility.StartCoroutineOwnerless(StartEnumerator(actionState));
+        }
+
+        internal static bool TryContinue()
         {
             if (!EditorPrefs.HasKey(nameof(ModActionState)))
                 return false;
@@ -108,7 +113,8 @@ namespace Knot.ProjectMod.Editor
             return true;
         }
 
-        public static bool TryStart(KnotProjectModPreset preset)
+
+        public static bool Start(KnotProjectModPreset preset)
         {
             if (preset == null || !EditorUtility.IsPersistent(preset))
             {
@@ -119,15 +125,10 @@ namespace Knot.ProjectMod.Editor
             if (!preset.Any())
                 return false;
 
-            var state = new ModActionState(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(preset)));
+            var state = new ModActionState(preset);
 
             Start(state);
             return true;
-        }
-
-        public static void Start(ModActionState actionState)
-        {
-            EditorCoroutineUtility.StartCoroutineOwnerless(StartEnumerator(actionState));
         }
 
 
@@ -145,6 +146,16 @@ namespace Knot.ProjectMod.Editor
                 PresetAssetGuid = presetAssetGuid;
             }
 
+            public ModActionState(KnotProjectModPreset preset)
+            {
+                PresetAssetGuid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(preset));
+            }
+
+            public KnotProjectModPreset GetPreset()
+            {
+                return AssetDatabase.LoadAssetAtPath<KnotProjectModPreset>(
+                    AssetDatabase.GUIDToAssetPath(PresetAssetGuid));
+            }
 
             public override string ToString()
             {

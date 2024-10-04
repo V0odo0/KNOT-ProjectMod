@@ -30,11 +30,13 @@ namespace Knot.ProjectMod.Editor
 
         void DrawElement(Rect rect, int elementIndex, bool isactive, bool isfocused)
         {
-            //rect.y += EditorGUIUtility.standardVerticalSpacing;
-            rect.x += 10;
             var property = serializedProperty.GetArrayElementAtIndex(elementIndex);
 
+            EditorGUI.indentLevel = 1;
+            EditorGUI.BeginChangeCheck();
             EditorGUI.PropertyField(rect, property, new GUIContent(property.GetManagedReferenceTypeName()), property.isExpanded);
+            if (EditorGUI.EndChangeCheck())
+                property.serializedObject.ApplyModifiedProperties();
         }
 
         float ElementHeight(int elementIndex) =>

@@ -18,13 +18,14 @@ namespace Knot.ProjectMod.Editor
         [SerializeField] private string _package = "com.package.name";
 
 
-        public override string BuildDescription() => $"Remove Package \"{Package}\"";
-        
+        public override string GetDescription() => $"Remove package \"{Package}\"";
+
+
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)
         {
             if (string.IsNullOrEmpty(Package))
             {
-                onActionPerformed?.Invoke(this, KnotModActionResult.Failed());
+                onActionPerformed?.Invoke(this, KnotModActionResult.Failed($"{nameof(Package)}: {nameof(string.IsNullOrEmpty)}"));
                 yield break;
             }
             
@@ -32,7 +33,10 @@ namespace Knot.ProjectMod.Editor
             while (!request.IsCompleted)
                 yield return null;
 
-            onActionPerformed?.Invoke(this, new KnotModActionResult(request.Status == StatusCode.Success));
+            onActionPerformed?.Invoke(this,
+                request.Error?.errorCode is ErrorCode.NotFound
+                    ? KnotModActionResult.Completed()
+                    : KnotModActionResult.Failed(request.Error?.message));
         }
     }
 }

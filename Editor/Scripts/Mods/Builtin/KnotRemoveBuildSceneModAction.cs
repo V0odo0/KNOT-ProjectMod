@@ -19,7 +19,7 @@ namespace Knot.ProjectMod.Editor
         [SerializeField] private SceneAsset _scene;
 
 
-        public override string BuildDescription()
+        public override string GetDescription()
         {
             if (Scene == null)
                 return "Missing Scene reference";

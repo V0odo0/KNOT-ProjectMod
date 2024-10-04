@@ -26,22 +26,31 @@ namespace Knot.ProjectMod.Editor
         [SerializeField] private string _destination = "Assets/";
 
 
-        public override string BuildDescription() => $"Move Directory from \"{Source}\" to \"{Destination}\"";
+        public override string GetDescription() => $"Move Directory from \"{Source}\" to \"{Destination}\"";
 
         public override IEnumerator Perform(EventHandler<IKnotModActionResult> onActionPerformed)
         {
-            if (string.IsNullOrEmpty(Source) || string.IsNullOrEmpty(Destination) || !Directory.Exists(Source))
+            if (string.IsNullOrEmpty(Source) || string.IsNullOrEmpty(Destination))
             {
-                onActionPerformed?.Invoke(this, KnotModActionResult.Failed());
+                onActionPerformed?.Invoke(this, KnotModActionResult.Failed($"{nameof(Source)} or {nameof(Destination)}: {nameof(string.IsNullOrEmpty)}"));
                 yield break;
             }
 
-            if (Directory.Exists(Destination) && Directory.GetFiles(Destination).Length == 0 && Directory.GetDirectories(Destination).Length == 0)
-                Directory.Delete(Destination);
-            else if (Directory.Exists(Destination))
+            if (!Directory.Exists(Source))
             {
-                onActionPerformed?.Invoke(this, KnotModActionResult.Failed());
+                onActionPerformed?.Invoke(this, KnotModActionResult.Failed($"\"{Source}\" does not exist"));
                 yield break;
+            }
+
+            if (Directory.Exists(Destination))
+            {
+                if (Directory.GetFiles(Destination).Length == 0 && Directory.GetDirectories(Destination).Length == 0)
+                    Directory.Delete(Destination);
+                else
+                {
+                    onActionPerformed?.Invoke(this, KnotModActionResult.Failed($"\"{Destination}\" already exist"));
+                    yield break;
+                }
             }
 
             Directory.Move(Source, Destination);

@@ -13,7 +13,6 @@ namespace Knot.ProjectMod.Editor
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-
         public IEnumerator<IKnotMod> GetEnumerator() => Mods.GetEnumerator();
 
         public IKnotMod[] BuildAllModsChain()

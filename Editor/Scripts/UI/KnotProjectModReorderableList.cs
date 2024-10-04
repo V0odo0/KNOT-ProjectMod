@@ -8,7 +8,7 @@ namespace Knot.ProjectMod.Editor
     public class KnotProjectModReorderableList : ReorderableList
     {
         internal static EditorExtensions.TypeInfo[] ModActionTypes { get; } =
-            typeof(IKnotModAction).GetDerivedTypesInfo();
+            typeof(IKnotMod).GetDerivedTypesInfo();
 
         public KnotProjectModReorderableList(SerializedObject serializedObject, SerializedProperty elements) : base(serializedObject, elements, true, true, true, true)
         {
@@ -49,7 +49,7 @@ namespace Knot.ProjectMod.Editor
             GenericMenu menu = new GenericMenu();
             foreach (var metadataType in ModActionTypes)
             {
-                menu.AddItem(new GUIContent(metadataType.Info.MenuCustomName), false, () =>
+                menu.AddItem(new GUIContent(metadataType.Info.MenuName), false, () =>
                 {
                     var instance = metadataType.GetInstance();
                     if (instance == null)

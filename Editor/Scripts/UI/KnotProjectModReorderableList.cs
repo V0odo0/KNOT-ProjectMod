@@ -30,13 +30,11 @@ namespace Knot.ProjectMod.Editor
 
         void DrawElement(Rect rect, int elementIndex, bool isactive, bool isfocused)
         {
+            rect.x += 8;
             var property = serializedProperty.GetArrayElementAtIndex(elementIndex);
 
-            EditorGUI.indentLevel = 1;
-            EditorGUI.BeginChangeCheck();
-            EditorGUI.PropertyField(rect, property, new GUIContent(property.GetManagedReferenceTypeName()), property.isExpanded);
-            if (EditorGUI.EndChangeCheck())
-                property.serializedObject.ApplyModifiedProperties();
+            var labelContent = EditorGUIUtility.TrTempContent(property.GetManagedReferenceTypeName());
+            EditorGUI.PropertyField(rect, property, labelContent, property.isExpanded);
         }
 
         float ElementHeight(int elementIndex) =>
@@ -65,6 +63,16 @@ namespace Knot.ProjectMod.Editor
             }
 
             menu.DropDown(rect);
+        }
+
+        public new void DoLayoutList()
+        {
+            if (serializedProperty == null)
+                return;
+
+            serializedProperty.serializedObject.UpdateIfRequiredOrScript();
+            base.DoLayoutList();
+            serializedProperty.serializedObject.ApplyModifiedProperties();
         }
     }
 }

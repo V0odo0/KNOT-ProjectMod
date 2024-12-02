@@ -1,3 +1,7 @@
+## 0.4.4
+
+* Add KnotAddressablesGroupIncludeModAction
+
 ## 0.4.1 (2024-10-04)
 
 * Add IKnotModDescriptor

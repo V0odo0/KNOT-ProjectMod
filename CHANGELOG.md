@@ -1,3 +1,7 @@
+## 0.4.5
+
+* Add DefaultIcon for KnotSetProductInfoModAction
+
 ## 0.4.4
 
 * Add KnotAddressablesGroupIncludeModAction

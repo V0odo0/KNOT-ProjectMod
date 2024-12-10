@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Knot.Core;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Knot.ProjectMod.Editor
             get => _package;
             set => _package = value;
         }
+        [Tooltip("com.package.name or file:C:/Path/To/Package or https://my.package.source.git")]
         [SerializeField] private string _package = "com.package.name";
 
 
@@ -26,6 +28,16 @@ namespace Knot.ProjectMod.Editor
             {
                 onActionPerformed?.Invoke(this, KnotModActionResult.Failed($"{nameof(Package)}: {nameof(string.IsNullOrEmpty)}"));
                 yield break;
+            }
+
+            var installedPackages = PackageInfo.GetAllRegisteredPackages();
+            foreach (var pack in installedPackages)
+            {
+                if (pack.packageId.Split("@").Contains(Package, StringComparer.InvariantCultureIgnoreCase))
+                {
+                    onActionPerformed?.Invoke(this, KnotModActionResult.Completed());
+                    yield break;
+                }
             }
 
             var request = Client.Add(Package);

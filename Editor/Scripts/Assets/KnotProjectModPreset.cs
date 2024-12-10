@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Knot.ProjectMod.Editor
@@ -15,28 +17,24 @@ namespace Knot.ProjectMod.Editor
 
         public IEnumerator<IKnotMod> GetEnumerator() => Mods.GetEnumerator();
 
-        public IKnotMod[] BuildAllModsChain()
+        public List<IKnotMod> BuildAllModsChain()
         {
             var mods = new List<IKnotMod>();
-            var presetReferences = new HashSet<KnotProjectModPreset> { this };
-
+            var addedModPresets = new HashSet<KnotProjectModPreset> { this };
             foreach (var m in Mods)
             {
-                if (m is KnotPresetReferencesMod presetMod && presetMod.Presets != null)
+                if (m is KnotPresetReferencesMod { Presets: not null } presetMod)
                 {
-                    foreach (var preset in presetMod.Presets)
+                    foreach (var preset in presetMod.Presets.Where(preset => preset != null && !addedModPresets.Contains(preset)))
                     {
-                        if (preset != null && !presetReferences.Contains(preset))
-                        {
-                            mods.AddRange(preset.BuildAllModsChain());
-                            presetReferences.Add(preset);
-                        }
+                        mods.AddRange(preset.BuildAllModsChain());
+                        addedModPresets.Add(preset);
                     }
                 }
                 else mods.Add(m);
             }
 
-            return mods.ToArray();
+            return mods;
         }
     }
 }

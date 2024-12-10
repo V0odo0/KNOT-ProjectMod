@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Knot.Core.Editor;
 using Unity.EditorCoroutines.Editor;
@@ -48,6 +49,24 @@ namespace Knot.ProjectMod.Editor
             EditorPrefs.SetString(nameof(ModActionState), JsonUtility.ToJson(state));
         }
 
+        internal static void CombineMods(List<IKnotMod> mods)
+        {
+            var combinedModActions = mods.OfType<IKnotCombinedModAction>().GroupBy(a => a.GetType()).
+                ToDictionary(a => a.Key, a => a.ToList());
+
+            foreach (var modType in combinedModActions.Keys)
+            {
+                var lastMod = combinedModActions[modType].LastOrDefault();
+                if (lastMod == null)
+                    continue;
+
+                var lastModActionIdx = mods.IndexOf(lastMod);
+                var finalModActions = lastMod.Combine(combinedModActions[modType]);
+                mods.InsertRange(lastModActionIdx, finalModActions);
+                mods.RemoveAll(m => combinedModActions[modType].Contains(m) && mods.IndexOf(m) < lastModActionIdx);
+            }
+        }
+
         internal static IEnumerator StartEnumerator(ModActionState state)
         {
             if (state == null || string.IsNullOrEmpty(state.PresetAssetGuid))
@@ -60,8 +79,10 @@ namespace Knot.ProjectMod.Editor
             SaveState(state);
 
             var mods = preset.BuildAllModsChain();
-            var startModId = Mathf.Clamp(state.NextModId, 0, mods.Length);
-            for (int i = startModId; i < mods.Length; i++)
+            CombineMods(mods);
+
+            var startModId = Mathf.Clamp(state.NextModId, 0, mods.Count);
+            for (int i = startModId; i < mods.Count; i++)
             {
                 if (!(mods[i] is IKnotModAction modAction))
                 {
@@ -70,23 +91,12 @@ namespace Knot.ProjectMod.Editor
                     continue;
                 }
 
-                var actionTitle = $"{modAction.GetType().GetManagedReferenceTypeName()}";
+                var actionTitle = $"{i + 1}. {modAction.GetType().GetManagedReferenceTypeName()}";
                 var actionDescription = modAction is IKnotModDescriptor descriptor ? descriptor.GetDescription() : "No description";
                 var actionProgressId = Progress.Start(actionTitle, actionDescription, Progress.Options.Indefinite | Progress.Options.Sticky);
                 Progress.SetTimeDisplayMode(actionProgressId, Progress.TimeDisplayMode.NoTimeShown);
                 
                 IKnotModActionResult actionResult = null;
-
-                var en = modAction.Perform((sender, r) =>
-                {
-                    state.NextModId++;
-                    SaveState(state);
-                    actionResult = r;
-
-                    if (!r.IsCompleted && !string.IsNullOrEmpty(r.ResultMessage))
-                        Progress.SetDescription(actionProgressId, r.ResultMessage);
-                    Progress.Finish(actionProgressId, r.IsCompleted ? Progress.Status.Succeeded : Progress.Status.Failed);
-                });
 
                 yield return modAction.Perform((sender, r) =>
                 {
@@ -101,6 +111,12 @@ namespace Knot.ProjectMod.Editor
 
                 yield return null;
                 yield return null;
+
+                if (actionResult == null)
+                {
+                    Progress.SetDescription(actionProgressId, "No action result provided");
+                    Progress.Finish(actionProgressId, Progress.Status.Failed);
+                }
             }
             
             EditorPrefs.DeleteKey(nameof(ModActionState));

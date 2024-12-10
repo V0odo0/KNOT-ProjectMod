@@ -1,3 +1,8 @@
+## 0.5.0 (2024-12-11)
+
+* Add IKnotCombinedModAction
+* Fixed re-importing of a package if it has already been imported
+
 ## 0.4.5
 
 * Add DefaultIcon for KnotSetProductInfoModAction

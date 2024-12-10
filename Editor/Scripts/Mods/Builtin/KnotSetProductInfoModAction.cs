@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Knot.Core;
 using UnityEditor;
 using UnityEditor.Build;
@@ -9,7 +11,7 @@ namespace Knot.ProjectMod.Editor
 {
     [Serializable]
     [KnotTypeInfo(displayName: "Set Product Info", MenuCustomName = BuiltinModActionPath + "Set Product Info")]
-    public class KnotSetProductInfoModAction : KnotModActionBase
+    public class KnotSetProductInfoModAction : KnotModActionBase, IKnotCombinedModAction
     {
         [field: SerializeField] public string CompanyName { get; set; } = "My Company Name";
         [field: SerializeField] public string ProductName { get; set; } = "My Product Name";
@@ -29,6 +31,11 @@ namespace Knot.ProjectMod.Editor
             onActionPerformed?.Invoke(this, KnotModActionResult.Completed());
 
             yield break;
+        }
+
+        public IEnumerable<IKnotModAction> Combine(IEnumerable<IKnotCombinedModAction> orderedModActions)
+        {
+            return orderedModActions.TakeLast(1);
         }
     }
 }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Knot.Core;
 using UnityEditor;
 using UnityEngine;
@@ -8,7 +10,7 @@ namespace Knot.ProjectMod.Editor
 {
     [Serializable]
     [KnotTypeInfo(displayName: "Set Scripting Backend", MenuCustomName = BuiltinModActionPath + "Set Scripting Backend")]
-    public class KnotSetScriptingBackendModAction : KnotModActionBase
+    public class KnotSetScriptingBackendModAction : KnotModActionBase, IKnotCombinedModAction
     {
         public BuildTargetGroup Target
         {
@@ -32,6 +34,11 @@ namespace Knot.ProjectMod.Editor
             PlayerSettings.SetScriptingBackend(Target, Implementation);
             onActionPerformed?.Invoke(this, KnotModActionResult.Completed());
             yield break;
+        }
+
+        public IEnumerable<IKnotModAction> Combine(IEnumerable<IKnotCombinedModAction> orderedModActions)
+        {
+            return orderedModActions.TakeLast(1);
         }
     }
 }
